@@ -1,0 +1,33 @@
+{% extends "mouse_cat/base.html" %}
+
+{% block content %}
+<div id="content">
+    <h3> Replay Games </h3>
+    <p>
+        {% if as_cat_finished %}
+            <h4>Games as cat:</h4>
+            <ul>
+            {% for game in as_cat_finished %}
+                <li> <a href="{% url 'replay_game' game.id %}">{{ game }}</a></li>
+            {% endfor %}
+            </ul>
+        {%  else %}
+            No games finished as cat
+        {% endif %}
+    </p>
+
+    <p>
+        {% if as_mouse_finished %}
+            <h4>Games as mouse:</h4>
+            <ul>
+            {% for game in as_mouse_finished %}
+                <li> <a href="{% url 'replay_game' game.id %}">{{ game }}</a></li>
+            {% endfor %}
+            </ul>
+        {%  else %}
+            No games finished as mouse
+        {% endif %}
+    </p>
+    <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+</div>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "mouse_cat/base.html" %}
+
+{% block content %}
+<div id="content">
+    <h1>Join game</h1>
+    <h3>Games Available</h3>
+    {% if msg_error %}
+        <p class="error">ERROR: {{ msg_error }}</p>
+    {% else %}
+        <p> <em> You will be Jerry (the mouse player) </em> </p>
+    <p>
+    {% for game in game_cat %}
+        <li> <a href="{% url 'join_game' game.id %}">{{ game }}</a></li>
+    {% endfor %}
+    </p>
+    {% endif %}
+    <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+</div>
+{% endblock content %}

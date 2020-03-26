@@ -1,0 +1,32 @@
+PREGUNTA 4
+Anyadimos a raiz Procfile(cambiar cosilla)
+runtime y requirements (adjuntos)
+---- proyecto/wsgi.py ----
+import os
+
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'proyecto.settings')
+
+application = get_wsgi_application()
+
+application = Cling(get_wsgi_application())
+------------------------------------------
+heroku login
+heroku create
+------ proyecto/settings.py ----
+ALLOWED_HOSTS = [u'secure-everglades-28767.herokuapp.com', u'localhost', u'127.0.0.1']
+git push heroku master (plus git add... before)
+heroku run bash
+python3 manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py createsuperuser
+python3 poblar.py
+export SQLITE=1
+exit
+---------------------------------------------
+-------------- COMPROBAR --------------------
+---------------------------------------------

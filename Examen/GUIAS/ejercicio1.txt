@@ -1,0 +1,43 @@
+PREGUNTA 1
+django-admin.py startproject proyecto
+python3 manage.py startapp aplicacion
+dropdb -U alumnodb -h localhost examen
+createdb -U alumnodb -h localhost examen
+--- proyecto/settings.py line 40---
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'aplicacion',
+]
+--- aplicacion/views.py ---
+from django.http import HttpResponse
+def index(request):
+    return HttpResponse("Rango says hey there partner!")
+--- proyecto/urls.py ---
+from django.contrib import admin
+from django.urls import path
+from django.urls import include
+from aplicacion import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('aplicacion/', include('aplicacion.urls')),
+    path('admin/', admin.site.urls),
+]
+
+--- aplicacion/urls.py (NEW FILE) ---
+from django.urls import path
+from aplicacion import views
+
+app_name = 'aplicacion'
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+---------------------------------------
+-----          PROBAR           -------
+---------------------------------------

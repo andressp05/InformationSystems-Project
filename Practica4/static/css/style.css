@@ -1,0 +1,110 @@
+
+body {
+  margin: 10;
+  padding: 20;
+  background-color: #FFFF99;
+  text-decoration-color: #FFFFFF;
+  height: 100vh;
+}
+
+.navbar .brand{
+  padding: 10px 30px
+}
+.navbar-header{
+  /*height: 90px*/
+  min-height: 50px
+}
+
+.navbar.navbar-default .nav-collapse { background-color: #f8f8f8; }
+.navbar.navbar-inverse .nav-collapse { background-color: #222; }
+
+#footer {
+  background-color: #D3D3D3;
+}
+#footer-bottom {
+  background-color: #D3D3D3;
+}
+#login .container #login-row #login-column #login-box {
+  border: 1px solid #000000;
+  background-color: #D3D3D3;
+  margin: auto;
+  color: black;
+}
+
+#signup .container #signup-row #signup-column #signup-box {
+  border: 1px solid #000000;
+  background-color: #D3D3D3;
+  margin: auto;
+  color: black;
+}
+
+.lib-panel {
+    margin: auto;
+}
+.lib-panel img {
+    width: 100%;
+    background-color: transparent;
+}
+
+.lib-panel .row,
+.lib-panel .col-md-6 {
+    padding: 0;
+    background-color: #FFFFFF;
+}
+
+
+.lib-panel .lib-row {
+    padding: 0 20px 0 20px;
+}
+
+.lib-panel .lib-row.lib-header {
+    background-color: #FFFFFF;
+    font-size: 20px;
+    padding: 10px 20px 0 20px;
+}
+
+.lib-panel .lib-row.lib-header .lib-header-seperator {
+    height: 2px;
+    width: 26px;
+    background-color: #d9d9d9;
+    margin: 7px 0 7px 0;
+}
+
+.lib-panel .lib-row.lib-desc {
+    position: relative;
+    /* height: 100%; */
+    display: block;
+    font-size: 13px;
+}
+.lib-panel .lib-row.lib-desc a{
+    position: absolute;
+    width: 100%;
+    bottom: 10px;
+    left: 20px;
+}
+
+.row-margin-bottom {
+    margin-bottom: 20px;
+}
+
+.box-shadow {
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.10);
+}
+
+table {
+	margin: 0 auto;
+	border-collapse: collapse;
+	background: yellow;
+}
+td {
+    width: 60px; height: 60px;
+}
+
+tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+	background: black;
+}
+
+.ui-widget-header td{
+  width: 40px;
+  height: 40px;
+}

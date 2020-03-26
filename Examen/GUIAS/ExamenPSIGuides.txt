@@ -1,0 +1,229 @@
+PREGUNTA 1
+django-admin.py startproject proyecto
+python3 manage.py startapp aplicacion
+dropdb -U alumnodb -h localhost examen
+createdb -U alumnodb -h localhost examen
+--- proyecto/settings.py line 40---
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'aplicacion',
+]
+--- aplicacion/views.py ---
+from django.http import HttpResponse
+def index(request):
+    return HttpResponse("Rango says hey there partner!")
+--- proyecto/urls.py ---
+from django.contrib import admin
+from django.urls import path
+from django.urls import include
+from aplicacion import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('aplicacion/', include('aplicacion.urls')),
+    path('admin/', admin.site.urls),
+]
+
+--- aplicacion/urls.py (NEW FILE) ---
+from django.urls import path
+from aplicacion import views
+
+app_name = 'aplicacion'
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+---------------------------------------
+-----          PROBAR           -------
+---------------------------------------
+PREGUNTA 2
+--- proyecto/settings.py ---
+# Database
+DATABASES = {}
+if os.getenv('SQLITE', False):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+else:
+    import dj_database_url
+    database_url = 'postgres://alumnodb:alumnodb@localhost:5432/examen'
+    DATABASES['default'] = dj_database_url.config(default=database_url)
+
+STATIC_ROOT = ’staticfiles’
+--- aplicacion/models.py ---
+class paciente(models.Model):
+    nombreP = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreP
+
+
+class medico(models.Model):
+    nombreM = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreM
+
+class receta(models.Model):
+    medico = models.ForeignKey(medico, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id) + "\t" + str(self.medico)+ "\t" + str(self.paciente)
+---------------------------------
+python3 manage.py createsuperuser
+---------------------------------
+---    aplicacion/admin.py  -----
+from django.contrib import admin
+from aplicacion.models import paciente, medico, receta
+
+admin.site.register(paciente)
+admin.site.register(medico)
+admin.site.register(receta)
+---------------------------------------
+-----    PROBAR (too ADMIN)     -------
+---------------------------------------
+PREGUNTA 3
+--- poblar.py (en proyecto de fuera) ---
+import os
+import django
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'proyecto.settings')
+
+django.setup()
+from aplicacion.models import paciente, medico, receta
+
+
+def poblar():
+    m1 = medico(nombreM = 'medico1')
+    m2 = medico(nombreM = 'medico2')
+    m3 = medico(nombreM = 'medico3')
+    m4 = medico(nombreM = 'medico4')
+    m1.save()
+    m2.save()
+    m3.save()
+    m4.save()
+
+    p1 = paciente(nombreP = 'paciente1')
+    p2 = paciente(nombreP = 'paciente2')
+    p1.save()
+    p2.save()
+
+    r1 = receta(medico = m1, paciente = p1)
+    r2 = receta(medico = m2, paciente = p1)
+    r3 = receta(medico = m1, paciente = p2)
+    r4 = receta(medico = m2, paciente = p2)
+    r5 = receta(medico = m3, paciente = p2)
+    r1.save()
+    r2.save()
+    r3.save()
+    r4.save()
+    r5.save()
+
+
+# Start execution here!
+if __name__ == '__main__':
+    print('Iniciando el script de Poblar Aplicacion...')
+    poblar()
+
+python3 poblar.py
+---------------------------------------
+-----    PROBAR (too ADMIN)     -------
+---------------------------------------
+PREGUNTA 4
+Anyadimos a raiz Procfile(cambiar cosilla)
+runtime y requirements (adjuntos)
+---- proyecto/wsgi.py ----
+import os
+
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'proyecto.settings')
+
+application = get_wsgi_application()
+
+application = Cling(get_wsgi_application())
+------------------------------------------
+heroku login
+heroku create
+------ proyecto/settings.py ----
+ALLOWED_HOSTS = [u'secure-everglades-28767.herokuapp.com', u'localhost', u'127.0.0.1']
+git push heroku master (plus git add... before)
+heroku run bash
+python3 manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py createsuperuser
+python3 poblar.py
+export SQLITE=1
+exit
+---------------------------------------------
+-------------- COMPROBAR --------------------
+---------------------------------------------
+PREGUNTA 5
+------- proyecto/settings.py ----
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+'DIRS': [TEMPLATE_DIR, ]
+------- raiz templates/aplicacion/receta.html ----
+COPIAR LO DADO en el apendice
+------- aplicacion/views.py ------
+from aplicacion.models import medico,paciente,receta
+
+def receta(request):
+    recetas = receta.objects.order_by('-id')[:3]
+    context_dict = {'receta': receta}
+    return render(request, "aplicacion/receta.html", context_dict)
+------- aplicacion/urls.py -------
+from django.urls import path
+from aplicacion import views
+
+app_name = 'aplicacion'
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('receta', views.receta_select, name='receta'),
+]
+-------------------------------------------
+-------------COMPROBAR---------------------
+-------------------------------------------
+PREGUNTA 6
+----- crear aplicacion/test ---------
+from django.test import TestCase
+from aplicacion.models import medico, paciente, receta
+
+class Test(TestCase):
+
+    def test1(self):
+        """ Borrar medicos, pacientes y recetas """
+        medicos = medico.objects.delete()
+        self.assertIsNotNone(self.medicos)
+        pacientes = paciente.objects.delete()
+        self.assertIsNotNone(self.pacientes)
+        recetas = receta.objects.delete()
+        self.assertIsNotNone(self.recetas)
+        m1 = medico.objects.create(id = 1, nombreM='medico1')
+        self.assertIsNone(self.m1)
+        p1 = paciente.objects.create(id = 1, nombreP='paciente1')
+        self.assertIsNone(self.p1)
+        r1 = receta.objects.create(id = 1, medico = medico1, paciente = paciente1)
+        r2 = receta.objects.create(id = 2, medico = medico1, paciente = paciente1)
+        r3 = receta.objects.create(id = 3, medico = medico1, paciente = paciente1)
+        r4 = receta.objects.create(id = 4, medico = medico1, paciente = paciente1)
+        self.assertIsNone(self.r1)
+        self.assertIsNone(self.r2)
+        self.assertIsNone(self.r3)
+        self.assertIsNone(self.r4)
+
+NOT WORKING
+
+

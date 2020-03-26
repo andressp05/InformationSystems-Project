@@ -1,0 +1,177 @@
+A COMPLETAR EL SCRIPT
+--- aplicacion/views.py ---
+from django.http import HttpResponse
+def index(request):
+    return HttpResponse("Rango says hey there partner!")
+--- proyecto/urls.py ---
+from django.contrib import admin
+from django.urls import path
+from django.urls import include
+from aplicacion import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('aplicacion/', include('aplicacion.urls')),
+    path('admin/', admin.site.urls),
+]
+
+--- aplicacion/urls.py (NEW FILE) ---
+from django.urls import path
+from aplicacion import views
+
+app_name = 'aplicacion'
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+----------PREGUNTA2--------------
+--- aplicacion/models.py ---
+class paciente(models.Model):
+    nombreP = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreP
+
+
+class medico(models.Model):
+    nombreM = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreM
+
+class receta(models.Model):
+    medico = models.ForeignKey(medico, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id) + "\t" + str(self.medico)+ "\t" + str(self.paciente)
+---    aplicacion/admin.py  -----
+from django.contrib import admin
+from aplicacion.models import paciente, medico, receta
+
+admin.site.register(paciente)
+admin.site.register(medico)
+admin.site.register(receta)
+--------- PREGUNTA3 --------
+PREGUNTA 3
+--- poblar.py (en proyecto de fuera) ---
+import os
+import django
+
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'proyecto.settings')
+
+django.setup()
+from aplicacion.models import paciente, medico, receta
+
+
+def poblar():
+    m1 = medico(nombreM = 'medico1')
+    m2 = medico(nombreM = 'medico2')
+    m3 = medico(nombreM = 'medico3')
+    m4 = medico(nombreM = 'medico4')
+    m1.save()
+    m2.save()
+    m3.save()
+    m4.save()
+
+    p1 = paciente(nombreP = 'paciente1')
+    p2 = paciente(nombreP = 'paciente2')
+    p1.save()
+    p2.save()
+
+    r1 = receta(medico = m1, paciente = p1)
+    r2 = receta(medico = m2, paciente = p1)
+    r3 = receta(medico = m1, paciente = p2)
+    r4 = receta(medico = m2, paciente = p2)
+    r5 = receta(medico = m3, paciente = p2)
+    r1.save()
+    r2.save()
+    r3.save()
+    r4.save()
+    r5.save()
+
+
+# Start execution here!
+if __name__ == '__main__':
+    print('Iniciando el script de Poblar Aplicacion...')
+    poblar()
+
+python3 poblar.py
+-------------PREGUNTA4----------------
+heroku run bash
+python3 manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py createsuperuser
+python3 poblar.py
+export SQLITE=1
+exit
+--------------PREGUNTA5---------------
+------- aplicacion/views.py ------
+from aplicacion.models import medico,paciente,receta
+
+def receta(request):
+    recetas = receta.objects.order_by('-id')[:3]
+    context_dict = {'receta': receta}
+    return render(request, "aplicacion/receta.html", context_dict)
+
+---PABLAJO SE SUPONE-----------
+def receta(request):
+    recetas = Receta.objects.all()
+    if recetas:
+        context_dict = {'recetas':recetas,'error':False}
+    else:
+        context_dict = {'recetas':recetas,'error':'No hay recetas en la base de datos'}
+    return render(request, 'receta.html', context_dict)
+------- aplicacion/urls.py -------
+from django.urls import path
+from aplicacion import views
+
+app_name = 'aplicacion'
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('receta', views.receta_select, name='receta'),
+]
+--------------PREGUNTA6---------------
+from unittest import TestCase
+from django.test import Client
+from django.urls import reverse
+from aplicacion.models import Paciente, Medico, Receta
+
+
+# python manage.py test aplicacion.tests
+
+#DO NOT MODIFIED ANYTHING BELLOW THIS POINT
+class test(TestCase):
+
+    def test_examen(self):
+        #Creacion del cliente
+        self.client = Client()
+
+        #Borrado
+        Paciente.objects.all().delete()
+        Medico.objects.all().delete()
+        Receta.objects.all().delete()
+
+        #Creacion
+        p = Paciente.objects.all()
+        m = Medico.objects.all()
+        r = Receta.objects.all()
+        nombre = 'medico1'
+        m = Medico.objects.create(nombreM=nombre)
+        m.save()
+        nombre = 'paciente1'
+        p = Paciente.objects.create(nombreP=nombre)
+        p.save()
+        for i in range(4):
+            r = Receta.objects.create(id = i+1,medico = m, paciente = p)
+            r.save()
+
+        #Assert
+        response = self.client.get(reverse('aplicacion:receta'))
+        self.assertIn(b'<tr><th>1</th><td>paciente1</td><td>medico1</td></tr>',response.content)
+        self.assertIn(b'<tr><th>2</th><td>paciente1</td><td>medico1</td></tr>',response.content)
+        self.assertIn(b'<tr><th>2</th><td>paciente1</td><td>medico1</td></tr>',response.content)
+        self.assertIn(b'<tr><th>2</th><td>paciente1</td><td>medico1</td></tr>',response.content)

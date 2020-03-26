@@ -1,0 +1,72 @@
+{% extends "mouse_cat/base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<div id="content">
+    {% if request.user.is_authenticated %}
+    <img src="/static/images/tom&jerry.jpg" alt="Picture of Tom&Jerry" width="300" height="10" style="float:right;"/>
+
+    <h3> Game Rules </h3>
+    <ul>
+        <li>It is a two players online game. </li>
+        <li>The player’s moves alternate with the cat moving first. </li>
+        <li>The player may move only one piece each turn. </li>
+        <li>The mouse is trapped when it can no longer move to a vacant square. It is
+          possible for two cats to trap the mouse against an edge of the board (other
+          than their original home-row) or even one corner where a single cat may do the
+          trapping. Should a cat reach the mouse original home row it will be unable to move further. </li>
+        <li><b>4-Cats Player:</b>
+          <ul>
+            <li><u>Initial Position:</u> The four cats are initially placed on the white squares at one edge of the board.</li>
+            <li><u>Objective:</u> To prevent the mouse from arriving to any of the inital cats positions.</li>
+            <li><u>Allowed Movements:</u> The cat move diagonally forward one square.</li>
+          </ul>
+        </li>
+        <li><b>Mouse Player:</b>
+          <ul>
+            <li><u>Initial Position:</u> The mouse is initially placed on the second white square at the opposite edge of the board.</li>
+            <li><u>Objective:</u> To cross from one side of the board to the other, arriving at any one of the cat original squares.</li>
+            <li><u>Allowed Movements:</u> The mouse moves diagonally forward or backward one square.</li>
+          </ul>
+        </li>
+      </ul>
+    {% else %}
+    <img src="/static/images/tom&jerry.jpg" alt="Picture of Tom&Jerry" width="300" height="10" style="float:right;"/>
+    <h1> Cat vs Mouse </h1>
+    <h5> Welcome to the web game Cat vs Mouse </h5>
+    <ul>
+      <li>
+      If you want to start playing, first you have to
+      <a href="{% url 'login' %}"> log in </a>.
+      </li>
+      <li>
+        If you still does not have an
+          account, create one by clicking <a href="{% url 'signup' %}"> here </a>.
+      </li>
+    </ul>
+    <h5> After logged in, you can: </h5>
+    <ul>
+    <li>
+      Create a new game
+    </li>
+    <li>
+      Join a game already created
+    </li>
+    <li>
+      Select and Play a Game online against your opponent
+    </li>
+    <li>
+      Access to your old games and analyze all its movements
+    </li>
+    </ul>
+    {% endif %}
+</div>
+{% endblock content %}
+
+<!-- <html>
+<header><title>This is title</title></header>
+<body>
+Hello world
+</body>
+</html> -->

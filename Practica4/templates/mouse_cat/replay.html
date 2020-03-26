@@ -1,0 +1,115 @@
+{% extends "mouse_cat/base.html" %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h1>Play</h1>
+    <p>Game: <b>{{ game.id }}</b></p>
+      <div class="replay">
+        {% csrf_token %}
+        <button id='prev_button' type="button" onclick="prevFunction()" disabled>Prev</button>
+        <button id='next_button' type="button" onclick="nextFunction()">Next</button>
+        <button id='plays_button' type="button" onclick="playsFunction()">Plays Now</button>
+        </div>
+      <script>
+        REPLAY_SPEED = 2000
+
+        function prevFunction(){
+          return replayMove(-1)
+        }
+
+        function nextFunction(){
+          return replayMove(1)
+        }
+
+        function playsFunction(){
+          var nxt_button = document.getElementById("next_button")
+          if(nxt_button.disabled == false){
+            replayMove(1)
+            setTimeout(playsFunction, REPLAY_SPEED)
+          }
+          else{
+            return;
+          }
+        }
+
+        function replayMove(move_type){
+          $.ajax({
+          type: "POST",
+          url: "{% url 'get_move' %}",
+          data: {
+            'shift': move_type,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(return_data) {
+            item = $('#'+return_data.origin).children()[0]
+            $('#'+return_data.origin).children().remove()
+            $('#'+return_data.target).html(item)
+
+            var nxt_button = document.getElementById("next_button")
+            var prev_button = document.getElementById("prev_button")
+            // si nos hemos movido hacia adelante y el botton de 'anterior'
+            // estaba desactivado, ahora puede estar activo
+            if(move_type == 1){
+              if(prev_button.disabled == true){
+                prev_button.disabled = false
+              }
+              // si no hay next move, deshabilitamos el botton
+              if(return_data.next == false){
+                plays_button.disabled = true
+                next_button.disabled = true
+              }
+            }
+            if(move_type == -1){
+              if(return_data.previous == false){
+                prev_button.disabled = true
+              }
+              if(next_button.disabled == true){
+                plays_button.disabled = false
+                next_button.disabled = false
+              }
+            }
+          }
+        });
+      }
+      </script>
+
+    {% if board %}
+        <p hidden>Board: {{ board }}</p>
+        <table id="chess_board">
+        {% for item in board %}
+            {% if forloop.counter0|divisibleby:8 %}<tr>{% endif %}
+            <!-- <td id="cell_{{ forloop.counter0}}"" style='width:50px;height:50px;border:1px solid #000000;text-align:center;'> -->
+            <td id="{{ forloop.counter0}}" class="ui-widget-header">
+                {% if item ==  0 %}
+                <div id="droppable">
+                </div>
+                {% elif item == 1 %}
+                  {% if game.cat_turn %}
+                      <div id="draggable_cat" class="ui-widget-content">
+                        <img src="/static/images/cat_face_yellow.png" alt="Cat">
+                      </div>
+                  {% else %}
+                    <img src="/static/images/cat_face_yellow.png" alt="Cat">
+                  {% endif %}
+                {% else %}
+                  {% if game.cat_turn == False %}
+                    <div id="draggable_mouse" class="ui-widget-content">
+                      <img src="/static/images/mouse_face_yellow.png" alt="Cat">
+                    </div>
+                  {% else %}
+                    <img src="/static/images/mouse_face_yellow.png" alt="Cat">
+                  {% endif %}
+                {% endif %}
+            </td>
+            {% if forloop.counter|divisibleby:8 or forloop.last %}</tr>{% endif %}
+        {% endfor %}
+        </table>
+    {% endif %}
+
+    <p><a href="{% url 'landing' %}">Return to homepage</a></p>
+</div>
+{% endblock content %}

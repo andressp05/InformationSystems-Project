@@ -1,0 +1,48 @@
+PREGUNTA 2
+--- proyecto/settings.py ---
+# Database
+DATABASES = {}
+if os.getenv('SQLITE', False):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+else:
+    import dj_database_url
+    database_url = 'postgres://alumnodb:alumnodb@localhost:5432/examen'
+    DATABASES['default'] = dj_database_url.config(default=database_url)
+
+STATIC_ROOT = ’staticfiles’
+--- aplicacion/models.py ---
+class paciente(models.Model):
+    nombreP = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreP
+
+
+class medico(models.Model):
+    nombreM = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.nombreM
+
+class receta(models.Model):
+    medico = models.ForeignKey(medico, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id) + "\t" + str(self.medico)+ "\t" + str(self.paciente)
+---------------------------------
+python3 manage.py createsuperuser
+---------------------------------
+---    aplicacion/admin.py  -----
+from django.contrib import admin
+from aplicacion.models import paciente, medico, receta
+
+admin.site.register(paciente)
+admin.site.register(medico)
+admin.site.register(receta)
+---------------------------------------
+-----    PROBAR (too ADMIN)     -------
+---------------------------------------

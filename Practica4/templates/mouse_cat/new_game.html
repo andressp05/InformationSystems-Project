@@ -1,0 +1,33 @@
+{% extends "mouse_cat/base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <hr>
+            <div class="row row-margin-bottom">
+            <div class="col-md-5 lib-item" data-category="view">
+                <div class="lib-panel">
+                    <div class="row box-shadow">
+                        <div class="col-md-6">
+                            <img class="lib-img-show" src="/static/images/cat_face_yellow.png">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="lib-row lib-header">
+                                <h3> Game Created </h3>
+                                <div class="lib-header-seperator"></div>
+                            </div>
+                            <div class="lib-row lib-desc">
+                                Game: <b>{{ game.id }}</b>
+                                <p> User: <b>{{ game.cat_user.username }}</b> </p>
+                                <ul> <li> You will be Tom (the cat player)</li> </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+		        <a href="{% url 'landing' %}">Return to homepage</a>
+	      </div>
+</div>
+{% endblock content %}

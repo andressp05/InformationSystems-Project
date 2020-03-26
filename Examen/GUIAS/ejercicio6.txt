@@ -1,0 +1,29 @@
+PREGUNTA 6
+----- crear aplicacion/test ---------
+from django.test import TestCase
+from aplicacion.models import medico, paciente, receta
+
+class Test(TestCase):
+
+    def test1(self):
+        """ Borrar medicos, pacientes y recetas """
+        medicos = medico.objects.delete()
+        self.assertIsNotNone(self.medicos)
+        pacientes = paciente.objects.delete()
+        self.assertIsNotNone(self.pacientes)
+        recetas = receta.objects.delete()
+        self.assertIsNotNone(self.recetas)
+        m1 = medico.objects.create(id = 1, nombreM='medico1')
+        self.assertIsNone(self.m1)
+        p1 = paciente.objects.create(id = 1, nombreP='paciente1')
+        self.assertIsNone(self.p1)
+        r1 = receta.objects.create(id = 1, medico = medico1, paciente = paciente1)
+        r2 = receta.objects.create(id = 2, medico = medico1, paciente = paciente1)
+        r3 = receta.objects.create(id = 3, medico = medico1, paciente = paciente1)
+        r4 = receta.objects.create(id = 4, medico = medico1, paciente = paciente1)
+        self.assertIsNone(self.r1)
+        self.assertIsNone(self.r2)
+        self.assertIsNone(self.r3)
+        self.assertIsNone(self.r4)
+
+NOT WORKING

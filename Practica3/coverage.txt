@@ -1,0 +1,53 @@
+coverage run --omit="*/test*" --source=datamodel manage.py test datamodel.tests_models
+
+Name                                   Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------
+datamodel/__init__.py                      0      0   100%
+datamodel/admin.py                         4      0   100%
+datamodel/apps.py                          3      3     0%   1-5
+datamodel/constants.py                     2      0   100%
+datamodel/migrations/0001_initial.py       7      0   100%
+datamodel/migrations/__init__.py           0      0   100%
+datamodel/models.py                      134     12    91%   122, 124, 126, 129, 136-139, 149, 151, 153, 161, 181
+datamodel/urls.py                          4      4     0%   1-6
+datamodel/views.py                         4      4     0%   1-5
+--------------------------------------------------------------------
+TOTAL                                    158     23    85%
+
+
+
+
+
+
+coverage run --omit="*/test*" --source=logic manage.py test logic.tests_function
+
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+logic/__init__.py                  0      0   100%
+logic/admin.py                     1      1     0%   1
+logic/apps.py                      3      3     0%   1-5
+logic/forms.py                    20      0   100%
+logic/migrations/__init__.py       0      0   100%
+logic/models.py                    1      1     0%   1
+logic/urls.py                      3      0   100%
+logic/views.py                   157    129    18%   18, 22-26, 30-32, 35, 39-58, 63-65, 70-95, 100-108, 113-115, 119-138, 142-170, 174-186, 190-217
+------------------------------------------------------------
+TOTAL                            185    134    28%
+
+
+
+
+
+coverage run --omit="*/test*" --source=logic manage.py test logic.tests_services
+
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+logic/__init__.py                  0      0   100%
+logic/admin.py                     1      1     0%   1
+logic/apps.py                      3      3     0%   1-5
+logic/forms.py                    20      0   100%
+logic/migrations/__init__.py       0      0   100%
+logic/models.py                    1      1     0%   1
+logic/urls.py                      3      0   100%
+logic/views.py                   157     10    94%   18, 53, 93, 170, 176-177, 198-199, 207-208
+------------------------------------------------------
